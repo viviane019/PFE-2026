@@ -1,0 +1,27 @@
+ </style>
+</head>
+<body>
+    <link rel="stylesheet" href="ex1.css">
+
+    <div class="form-container">
+        <h3>Personalize seu Cartão</h3>
+        <input type="text" id="inputNome" placeholder="Digite seu Nome" oninput="atualizarCartao()">
+        <input type="text" id="inputCargo" placeholder="Digite seu Cargo" oninput="atualizarCartao()">
+        
+        <label>Escolha uma Cor:</label>
+        <select id="inputCor" onchange="mudarCor()">
+            <option value="#3498db">Azul Real</option>
+            <option value="#e74c3c">Vermelho Intenso</option>
+            <option value="#2ecc71">Verde Esmeralda</option>
+            <option value="#f1c40f">Amarelo Sol</option>
+            <option value="#9b59b6">Roxo Ametista</option>
+        </select>
+    </div>
+
+    <!-- O Cartão (Live Preview) -->
+    <div id="cartao">
+        <h2 id="previewNome">Seu Nome</h2>
+        <p id="previewCargo">Seu Cargo</p>
+    </div>
+    <script src="ex1.js"></script>
+</body>
