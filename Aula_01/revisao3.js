@@ -3,7 +3,7 @@ function limparNomeContato(nome) {
 }
 
 function contarCaracteres(nome) {
-    const nomeArr = (nome.trim()).split("");
+    const nomeArr = (nome.trim()).split(" ");
     return nomeArr.length;
 }
 
