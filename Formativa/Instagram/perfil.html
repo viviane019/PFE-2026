@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vycnnz • Instagram</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:#fafafa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#262626;}
+        .wrap{display:flex;min-height:100vh;}
+
+        /* SIDEBAR */
+        .sidebar{width:245px;position:fixed;top:0;left:0;bottom:0;background:#fff;border-right:1px solid #dbdbdb;padding:20px 12px;display:flex;flex-direction:column;z-index:100;}
+        .logo{font-size:22px;font-style:italic;font-weight:700;padding:12px 12px 24px;cursor:pointer;}
+        .nav-links{list-style:none;flex:1;}
+        .nav-links li{display:flex;align-items:center;gap:16px;padding:12px 12px;border-radius:8px;cursor:pointer;font-size:15px;transition:background .15s;}
+        .nav-links li:hover{background:#f0f0f0;}
+        .nav-links li.active{font-weight:700;}
+        .nav-links li i{font-size:22px;width:24px;text-align:center;}
+
+        /* PAGE */
+        .page{margin-left:245px;padding:30px 40px;max-width:935px;width:100%;}
+
+        /* HEADER */
+        .prof-header{display:flex;align-items:flex-start;gap:90px;margin-bottom:44px;}
+        .avatar-wrap{flex-shrink:0;}
+        .avatar{width:150px;height:150px;border-radius:50%;background:#c7c7c7 url('euzinha.jpeg') center/cover;border:1px solid #dbdbdb;}
+        .info{flex:1;}
+        .prof-top{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+        .prof-username{font-size:20px;font-weight:300;}
+        .btn-edit{padding:7px 16px;background:#efefef;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;}
+        .btn-edit:hover{background:#dbdbdb;}
+        .btn-icon{background:none;border:none;font-size:20px;cursor:pointer;color:#262626;}
+        .prof-stats{display:flex;gap:36px;margin-bottom:20px;}
+        .prof-stats span{font-size:15px;cursor:pointer;}
+        .prof-stats strong{font-weight:600;}
+        .prof-bio strong{font-size:14px;font-weight:600;display:block;margin-bottom:4px;}
+        .prof-bio p{font-size:14px;line-height:1.6;}
+
+        /* DESTAQUES */
+        .highlights{display:flex;gap:28px;padding:20px 0;border-bottom:1px solid #dbdbdb;margin-bottom:0;overflow-x:auto;}
+        .hl{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;flex-shrink:0;}
+        .hl-ring{width:77px;height:77px;border-radius:50%;border:1px solid #dbdbdb;display:flex;align-items:center;justify-content:center;}
+        .hl-ring div{width:70px;height:70px;border-radius:50%;background-size:cover;background-position:center;}
+        .hl span{font-size:12px;color:#262626;}
+
+        /* TABS */
+        .tabs{display:flex;justify-content:center;gap:52px;border-top:1px solid #dbdbdb;margin-bottom:0;}
+        .tab{display:flex;align-items:center;gap:6px;padding:14px 0;font-size:12px;font-weight:600;color:#8e8e8e;cursor:pointer;border-top:1px solid transparent;margin-top:-1px;letter-spacing:1px;text-transform:uppercase;transition:color .15s;}
+        .tab.active{color:#262626;border-top-color:#262626;}
+        .tab i{font-size:11px;}
+
+        /* GRID */
+        .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:4px;}
+        .gi{aspect-ratio:1;overflow:hidden;cursor:pointer;position:relative;background:#efefef;}
+        .gi img{width:100%;height:100%;object-fit:cover;display:block;transition:filter .2s;}
+        .gi:hover img{filter:brightness(.7);}
+        .gi-hover{position:absolute;inset:0;display:none;align-items:center;justify-content:center;gap:24px;color:#fff;font-weight:700;font-size:14px;}
+        .gi:hover .gi-hover{display:flex;}
+        .gi-hover span{display:flex;align-items:center;gap:5px;}
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="logo" onclick="location.href='instagram.html'">Instagram</div>
+        <ul class="nav-links">
+            <li onclick="location.href='instagram.html'"><i class="fa-solid fa-house"></i><span>Página inicial</span></li>
+            <li><i class="fa-solid fa-magnifying-glass"></i><span>Pesquisa</span></li>
+            <li><i class="fa-regular fa-compass"></i><span>Explorar</span></li>
+            <li><i class="fa-solid fa-clapperboard"></i><span>Reels</span></li>
+            <li><i class="fa-regular fa-paper-plane"></i><span>Mensagens</span></li>
+            <li><i class="fa-regular fa-heart"></i><span>Notificações</span></li>
+            <li><i class="fa-regular fa-square-plus"></i><span>Criar</span></li>
+            <li class="active"><i class="fa-solid fa-user"></i><span>Perfil</span></li>
+        </ul>
+    </nav>
+
+    <!-- PROFILE PAGE -->
+    <div class="page">
+
+        <!-- HEADER -->
+        <div class="prof-header">
+            <div class="avatar-wrap"><div class="avatar"></div></div>
+            <div class="info">
+                <div class="prof-top">
+                    <span class="prof-username">vivianevitoria26</span>
+                    <button class="btn-edit">Editar perfil</button>
+                    <button class="btn-edit">Ver arquivo</button>
+                    <button class="btn-icon"><i class="fa-solid fa-gear"></i></button>
+                </div>
+                <div class="prof-stats">
+                    <span><strong>47</strong> publicações</span>
+                    <span><strong>1.284</strong> seguidores</span>
+                    <span><strong>392</strong> seguindo</span>
+                </div>
+                <div class="prof-bio">
+                    <strong>vivi</strong>
+                    <p>✨ vivendo cada momento<br>📍 Limeira, SP<br>🎵 música &amp; momentos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DESTAQUES -->
+        <div class="highlights">
+            <div class="hl">
+                <div class="hl-ring"><div style="background:#f0d0c8;"></div></div>
+                <span>viagens</span>
+            </div>
+            <div class="hl">
+                <div class="hl-ring"><div style="background:#c8e8f0;"></div></div>
+                <span>amigos</span>
+            </div>
+            <div class="hl">
+                <div class="hl-ring"><div style="background:#d0f0c8;"></div></div>
+                <span>shows</span>
+            </div>
+            <div class="hl">
+                <div class="hl-ring"><div style="background:#f0e8c8;"></div></div>
+                <span>dia a dia</span>
+            </div>
+            <div class="hl">
+                <div class="hl-ring"><div style="background:#f0c8e0;"></div></div>
+                <span>família</span>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <div class="tab active" onclick="setTab(this)"><i class="fa-solid fa-table-cells-large"></i> PUBLICAÇÕES</div>
+            <div class="tab" onclick="setTab(this)"><i class="fa-regular fa-bookmark"></i> SALVO</div>
+            <div class="tab" onclick="setTab(this)"><i class="fa-solid fa-tag"></i> MARCAÇÕES</div>
+        </div>
+
+        <!-- GRID -->
+        <div class="grid">
+            <div class="gi"><img src="euzinha.jpeg" alt=""><div class="gi-hover"><span><i class="fa-solid fa-heart"></i>7.145</span><span><i class="fa-solid fa-comment"></i>43</span></div></div>
+            <div class="gi"><img src="eu.jpg" alt=""><div class="gi-hover"><span><i class="fa-solid fa-heart"></i>6.080</span><span><i class="fa-solid fa-comment"></i>31</span></div></div>
+            <div class="gi"><img src="flor.jpeg" alt=""><div class="gi-hover"><span><i class="fa-solid fa-heart"></i>50.000</span><span><i class="fa-solid fa-comment"></i>204</span></div></div>
+            <div class="gi"><img src="comida.jpg" alt=""><div class="gi-hover"><span><i class="fa-solid fa-heart"></i>1.425</span><span><i class="fa-solid fa-comment"></i>18</span></div></div>
+            <div class="gi"><img src="ceu.jpg" alt=""><div class="gi-hover"><span><i class="fa-solid fa-heart"></i>4.251</span><span><i class="fa-solid fa-comment"></i>27</span></div></div>
+            <div class="gi"><img src="4.jpg" alt=""><div class="gi-hover"><span><i class="fa-solid fa-heart"></i>5.866</span><span><i class="fa-solid fa-comment"></i>52</span></div></div>
+            <div class="gi"><img src="6.jpg" alt=""><div class="gi-hover"><span><i class="fa-solid fa-heart"></i>1.426</span><span><i class="fa-solid fa-comment"></i>14</span></div></div>
+            <div class="gi"><img src="3.jpg" alt=""><div class="gi-hover"><span><i class="fa-solid fa-heart"></i>6.582</span><span><i class="fa-solid fa-comment"></i>38</span></div></div>
+            <div class="gi"><img src="flor.jpeg" alt=""><div class="gi-hover"><span><i class="fa-solid fa-heart"></i>5.000</span><span><i class="fa-solid fa-comment"></i>61</span></div></div>
+        </div>
+
+    </div>
+</div>
+<script>
+function setTab(el){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+}
+</script>
+</body>
+</html>

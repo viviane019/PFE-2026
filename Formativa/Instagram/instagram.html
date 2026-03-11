@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:#fafafa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#262626;overflow-x:hidden;}
+
+        /* ── SIDEBAR só ícones ── */
+        .sidebar{
+            width:72px;
+            position:fixed;top:0;left:0;bottom:0;
+            background:#fff;
+            border-right:1px solid #dbdbdb;
+            display:flex;flex-direction:column;
+            align-items:center;
+            padding:12px 0;
+            z-index:200;
+            gap:4px;
+        }
+        .sb-logo{font-size:24px;font-style:italic;font-weight:900;margin-bottom:16px;cursor:pointer;padding:8px;}
+        .sb-item{
+            width:48px;height:48px;
+            border-radius:12px;
+            display:flex;align-items:center;justify-content:center;
+            cursor:pointer;font-size:24px;
+            transition:background .15s;
+            position:relative;
+            color:#262626;
+        }
+        .sb-item:hover{background:#f0f0f0;}
+        .sb-item.active{font-weight:900;}
+        .sb-badge{
+            position:absolute;top:6px;right:6px;
+            background:#ed4956;color:#fff;
+            font-size:9px;font-weight:700;
+            border-radius:50%;width:16px;height:16px;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .sb-avatar{width:26px;height:26px;border-radius:50%;background:#c7c7c7 url('https://i.pinimg.com/736x/63/2b/80/632b80cca4fbc8ba249392ee473236ea.jpg') center/cover;}
+        .sb-spacer{flex:1;}
+        .sb-more{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:24px;transition:background .15s;}
+        .sb-more:hover{background:#f0f0f0;}
+
+        /* ── LAYOUT PRINCIPAL ── */
+        .main{
+            margin-left:72px;
+            display:flex;
+            justify-content:center;
+            padding:0 20px;
+            gap:28px;
+        }
+
+        /* ── FEED ── */
+        .feed{
+            width:470px;
+            flex-shrink:0;
+            padding-top:24px;
+        }
+
+        /* ── STORIES ── */
+        .stories-box{
+            background:#fff;
+            border:1px solid #dbdbdb;
+            border-radius:4px;
+            padding:16px 12px 12px;
+            margin-bottom:24px;
+            display:flex;
+            align-items:center;
+            gap:0;
+            position:relative;
+        }
+        .stories-scroll{
+            display:flex;
+            gap:12px;
+            overflow-x:auto;
+            scroll-behavior:smooth;
+            scrollbar-width:none;
+            flex:1;
+            padding:2px 4px;
+        }
+        .stories-scroll::-webkit-scrollbar{display:none;}
+        .story-item{
+            display:flex;flex-direction:column;
+            align-items:center;gap:5px;
+            cursor:pointer;flex-shrink:0;
+            width:64px;
+        }
+        .story-ring{
+            width:62px;height:62px;border-radius:50%;
+            background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+            padding:2.5px;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .story-ring.seen{background:#c7c7c7;}
+        .story-ring.mine{background:#fff;border:2px solid #dbdbdb;position:relative;}
+        .story-inner{
+            width:55px;height:55px;border-radius:50%;
+            background-color:#c7c7c7;background-size:cover;background-position:center;
+            border:2px solid #fff;
+        }
+        .story-item span{font-size:11px;text-align:center;width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#262626;}
+        .add-wrap{position:relative;}
+        .add-dot{
+            position:absolute;bottom:2px;right:2px;
+            width:18px;height:18px;background:#0095f6;
+            border-radius:50%;border:2px solid #fff;
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;font-size:9px;font-weight:900;
+        }
+        .sc-btn{
+            background:#fff;border:1px solid #dbdbdb;
+            border-radius:50%;width:26px;height:26px;
+            display:flex;align-items:center;justify-content:center;
+            cursor:pointer;font-size:10px;
+            box-shadow:0 1px 4px rgba(0,0,0,.12);
+            flex-shrink:0;
+            z-index:2;
+        }
+
+        /* ── POSTS ── */
+        .post{background:#fff;border:1px solid #dbdbdb;border-radius:4px;margin-bottom:24px;}
+        .post-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;}
+        .user-info{display:flex;align-items:center;gap:10px;cursor:pointer;}
+        .pp{width:32px;height:32px;border-radius:50%;background-color:#c7c7c7;background-size:cover;background-position:center;flex-shrink:0;}
+        .uname{font-size:14px;font-weight:600;}
+        .utime{font-size:12px;color:#8e8e8e;margin-left:4px;}
+        .post-header>.fa-ellipsis{cursor:pointer;font-size:16px;}
+        .post-image{width:100%;line-height:0;position:relative;}
+        .post-image img{width:100%;max-height:600px;object-fit:cover;display:block;}
+
+        /* slider dots */
+        .post-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:4px;}
+        .dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.6);}
+        .dot.active{background:#fff;}
+
+        .post-footer{padding:6px 14px 12px;}
+        .post-actions{display:flex;align-items:center;gap:14px;padding:6px 0 4px;}
+        .post-actions i{font-size:24px;cursor:pointer;transition:transform .1s;}
+        .post-actions i:hover{transform:scale(1.1);}
+        .post-actions .save{margin-left:auto;}
+        .likes{font-size:14px;font-weight:600;margin:2px 0 4px;}
+        .caption{font-size:14px;line-height:1.5;}
+        .caption strong{font-weight:600;margin-right:4px;}
+        .view-comments{font-size:14px;color:#8e8e8e;cursor:pointer;margin-top:2px;}
+        .post-time{font-size:10px;color:#8e8e8e;text-transform:uppercase;margin-top:6px;letter-spacing:.3px;}
+
+        /* ── COMENTÁRIOS ── */
+        .comments-list{padding:0;}
+        .c-item{font-size:14px;margin-bottom:4px;line-height:1.4;display:flex;align-items:flex-start;justify-content:space-between;}
+        .c-item span{flex:1;}
+        .c-item strong{font-weight:600;margin-right:4px;}
+        .c-del{background:none;border:none;color:#8e8e8e;font-size:10px;cursor:pointer;opacity:0;padding:2px;}
+        .c-item:hover .c-del{opacity:1;}
+        .comment-box{
+            display:flex;align-items:center;gap:8px;
+            padding:8px 14px;border-top:1px solid #efefef;
+            margin-top:4px;
+        }
+        .comment-box .my-pp{width:28px;height:28px;border-radius:50%;background:#c7c7c7 url('https://i.pinimg.com/736x/63/2b/80/632b80cca4fbc8ba249392ee473236ea.jpg') center/cover;flex-shrink:0;}
+        .comment-box input{flex:1;border:none;outline:none;font-size:14px;background:transparent;}
+        .comment-box input::placeholder{color:#8e8e8e;}
+        .pub-btn{background:none;border:none;color:#0095f6;font-size:13px;font-weight:700;cursor:pointer;opacity:.3;transition:opacity .2s;white-space:nowrap;}
+        .pub-btn.on{opacity:1;}
+
+        /* ── ASIDE ── */
+        .aside{
+            width:320px;flex-shrink:0;
+            padding-top:24px;
+        }
+        .cur-user{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+        .cur-pp{width:56px;height:56px;border-radius:50%;background:#c7c7c7 url('https://i.pinimg.com/736x/63/2b/80/632b80cca4fbc8ba249392ee473236ea.jpg') center/cover;}
+        .cur-info{flex:1;}
+        .cur-info strong{font-size:14px;font-weight:600;display:block;}
+        .cur-info span{font-size:13px;color:#8e8e8e;}
+        .mudar-btn{background:none;border:none;color:#0095f6;font-size:13px;font-weight:600;cursor:pointer;}
+        .sug-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+        .sug-title span{font-size:13px;font-weight:600;color:#8e8e8e;}
+        .sug-title a{font-size:12px;font-weight:600;color:#262626;cursor:pointer;text-decoration:none;}
+        .sug-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+        .sug-pp{width:32px;height:32px;border-radius:50%;background:#c7c7c7;background-size:cover;flex-shrink:0;}
+        .sug-info{flex:1;}
+        .sug-info strong{font-size:13px;display:block;font-weight:600;}
+        .sug-info span{font-size:11px;color:#8e8e8e;}
+        .seg-btn{background:none;border:none;color:#0095f6;font-size:12px;font-weight:700;cursor:pointer;}
+        .aside-footer{margin-top:20px;font-size:11px;color:#c7c7c7;line-height:2;}
+        .aside-footer a{color:#c7c7c7;text-decoration:none;}
+        .aside-footer a:hover{text-decoration:underline;}
+
+        /* ── MODAL STORY ── */
+        .s-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;align-items:center;justify-content:center;gap:16px;}
+        .s-overlay.open{display:flex;}
+        .s-card{width:360px;height:630px;border-radius:4px;position:relative;overflow:hidden;background:#111;flex-shrink:0;}
+        .s-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(20px) brightness(.4);transform:scale(1.1);}
+        .s-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:100px;z-index:1;}
+        .s-progress{position:absolute;top:8px;left:8px;right:8px;display:flex;gap:3px;z-index:3;}
+        .s-seg{flex:1;height:2px;background:rgba(255,255,255,.35);border-radius:2px;overflow:hidden;}
+        .s-fill{height:100%;background:#fff;width:0%;}
+        .s-head{position:absolute;top:20px;left:10px;right:10px;display:flex;align-items:center;gap:8px;z-index:3;}
+        .s-av{width:32px;height:32px;border-radius:50%;border:2px solid #fff;background:#c7c7c7;background-size:cover;flex-shrink:0;}
+        .s-uname{color:#fff;font-size:13px;font-weight:600;flex:1;text-shadow:0 1px 3px rgba(0,0,0,.5);}
+        .s-t{color:rgba(255,255,255,.7);font-size:11px;}
+        .s-x{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;}
+        .s-tapL{position:absolute;top:0;left:0;width:40%;bottom:0;z-index:2;cursor:pointer;}
+        .s-tapR{position:absolute;top:0;right:0;width:40%;bottom:0;z-index:2;cursor:pointer;}
+        .s-rep{position:absolute;bottom:14px;left:10px;right:10px;z-index:3;display:flex;gap:10px;align-items:center;}
+        .s-rep input{flex:1;background:transparent;border:1.5px solid rgba(255,255,255,.5);border-radius:24px;padding:8px 16px;color:#fff;font-size:13px;outline:none;}
+        .s-rep input::placeholder{color:rgba(255,255,255,.6);}
+        .s-arr{background:rgba(255,255,255,.15);border:none;border-radius:50%;width:40px;height:40px;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+        .s-arr:hover{background:rgba(255,255,255,.3);}
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR só ícones -->
+<nav class="sidebar">
+    <div class="sb-logo">
+        <i class="fa-brands fa-instagram" style="background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:28px;"></i>
+    </div>
+    <div class="sb-item active" title="Página inicial"><i class="fa-solid fa-house"></i></div>
+    <div class="sb-item" title="Pesquisa"><i class="fa-solid fa-magnifying-glass"></i></div>
+    <div class="sb-item" title="Explorar"><i class="fa-regular fa-compass"></i></div>
+    <div class="sb-item" title="Reels"><i class="fa-solid fa-clapperboard"></i></div>
+    <div class="sb-item" title="Mensagens">
+        <i class="fa-regular fa-paper-plane"></i>
+        <span class="sb-badge">5</span>
+    </div>
+    <div class="sb-item" title="Notificações">
+        <i class="fa-regular fa-heart"></i>
+        <span class="sb-badge">6</span>
+    </div>
+    <div class="sb-item" title="Criar"><i class="fa-regular fa-square-plus"></i></div>
+    <div class="sb-item" title="Perfil" onclick="location.href='perfil.html'">
+        <div class="sb-avatar"></div>
+    </div>
+    <div class="sb-spacer"></div>
+    <div class="sb-item" title="Mais"><i class="fa-solid fa-bars"></i></div>
+    <div class="sb-item" title="Threads"><i class="fa-solid fa-at"></i></div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- FEED -->
+    <div class="feed">
+
+        <!-- STORIES -->
+        <div class="stories-box">
+            <button class="sc-btn" id="scL" style="margin-right:6px;"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="stories-scroll" id="storiesScroll">
+
+                <div class="story-item" onclick="openStory(-1)">
+                    <div class="add-wrap">
+                        <div class="story-ring mine">
+                            <div class="story-inner" style="background-image:url('euzinha.jpeg');"></div>
+                        </div>
+                        <div class="add-dot"><i class="fa-solid fa-plus" style="font-size:8px;"></i></div>
+                    </div>
+                    <span>vivianevitoria26</span>
+                </div>
+
+                <div class="story-item" onclick="openStory(0)">
+                    <div class="story-ring"><div class="story-inner" style="background-image:url('P1.jpg');background-color:#e0c8f0;"></div></div>
+                    <span>julia_rodrigues</span>
+                </div>
+                <div class="story-item" onclick="openStory(1)">
+                    <div class="story-ring"><div class="story-inner" style="background-color:#c8a060;"></div></div>
+                    <span>pvd_thiaga</span>
+                </div>
+                <div class="story-item" onclick="openStory(2)">
+                    <div class="story-ring"><div class="story-inner" style="background-color:#d090a0;"></div></div>
+                    <span>mii-amore</span>
+                </div>
+                <div class="story-item" onclick="openStory(3)">
+                    <div class="story-ring"><div class="story-inner" style="background-color:#808080;"></div></div>
+                    <span>daillyvnz</span>
+                </div>
+                <div class="story-item" onclick="openStory(4)">
+                    <div class="story-ring seen"><div class="story-inner" style="background-color:#604020;"></div></div>
+                    <span>x.alveesz</span>
+                </div>
+                <div class="story-item" onclick="openStory(5)">
+                    <div class="story-ring seen"><div class="story-inner" style="background-color:#202020;"></div></div>
+                    <span>llyawy__</span>
+                </div>
+                <div class="story-item" onclick="openStory(6)">
+                    <div class="story-ring"><div class="story-inner" style="background-color:#a06080;"></div></div>
+                    <span>maa.eduarda</span>
+                </div>
+                <div class="story-item" onclick="openStory(7)">
+                    <div class="story-ring"><div class="story-inner" style="background-color:#406080;"></div></div>
+                    <span>vitor__8</span>
+                </div>
+
+            </div>
+            <button class="sc-btn" id="scR" style="margin-left:6px;"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <!-- POSTS -->
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('p2.jpg');"></div>
+                    <div><span class="uname">duda_01</span><span class="utime">• 1 d</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="duda.png" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>10.000 curtidas</strong></div>
+                <div class="caption"><strong>duda_01</strong> ✨ Construindo a vida que sempre sonhei.</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 1 dia</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url(euzinha.jpeg);background-color:#c7c7c7;"></div>
+                    <div><span class="uname">vivianevitoria26</span><span class="utime">• 2 d</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="eu.jpg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>5.000 curtidas</strong></div>
+                <div class="caption"><strong>vivianevitoria26</strong> Pequenos gestos criam grandes memórias #momentos #vida #felicidade</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 2 dias</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+
+          <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url(euzinha.jpeg);background-color:#c7c7c7;"></div>
+                    <div><span class="uname">vivianevitoria26</span><span class="utime">• 2 d</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="flor.jpeg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>5.050 curtidas</strong></div>
+                <div class="caption"><strong>vivianevitoria26</strong> Pequenos gestos criam grandes memórias #momentos #vida #felicidade</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 3 dias</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('brenda.png');background-color:#c7c7c7;"></div>
+                    <div><span class="uname">brendo_lindão</span><span class="utime">• 2 d</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="brenda.png" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>1.240 curtidas</strong></div>
+                <div class="caption"><strong>brendo_lindão</strong> Tranquilo, na paz e vivendo o melhor da vida 👊🔥</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 2 dias</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('euzinha.jpeg');background-color:#c7c7c7;"></div>
+                    <div><span class="uname">vivianevitoria26</span><span class="utime">• 3 d</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="euzinha.jpeg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>50.000 curtidas</strong></div>
+                <div class="caption"><strong>vivianevitoria26</strong> tudo que é meu sempre me encontra</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 3 dias</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('p5.jpg');"></div>
+                    <div><span class="uname">isabela_23</span><span class="utime">• 3 d</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="1.jpg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>1.425 curtidas</strong></div>
+                <div class="caption"><strong>isabela_23</strong> Entre as luzes da cidade e o silêncio da noite, eu encontro meus pensamentos</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 3 dias</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('mario.jpg);"></div>
+                    <div><span class="uname">mario12_</span><span class="utime">• 4 d</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="2.jpg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>4.251 curtidas</strong></div>
+                <div class="caption"><strong>mario12_</strong> O mar sempre lembra que tudo na vida vem em ondas</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 4 dias</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('p7.jpg');"></div>
+                    <div><span class="uname">vitor__8</span><span class="utime">• 6 h</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="3.jpg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>6.582 curtidas</strong></div>
+                <div class="caption"><strong>vitor__8</strong> Às vezes, a beleza da vida cabe na simplicidade da vida cotidiana</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 5 dias</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('p8.jpg');"></div>
+                    <div><span class="uname">vycnnz</span><span class="utime">• 5 d</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="4.jpg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>7.145 curtidas</strong></div>
+                <div class="caption"><strong>vycnnz</strong> Não espere a vida acontecer… faça ela valer a pena</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 5 dias</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('p9.jpg');"></div>
+                    <div><span class="uname">gigiXX_</span><span class="utime">• 6 d</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="5.jpg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>5.866 curtidas</strong></div>
+                <div class="caption"><strong>gigiXX_</strong> paz e sintonia #natureza #serenidade #vida</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 6 dias</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('p10.jpg');"></div>
+                    <div><span class="uname">vinizin_0</span><span class="utime">• 1 sem</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="6.jpg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>1.426 curtidas</strong></div>
+                <div class="caption"><strong>vinizin_0</strong> fim de tarde, o sol se despede e a cidade ganha um brilho especial #pordosol #cidade #momentos</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 1 semana</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('p11.jpg');"></div>
+                    <div><span class="uname">mo_nike2</span><span class="utime">• 1 sem</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="7.jpg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>7.581 curtidas</strong></div>
+                <div class="caption"><strong>mo_nike2</strong> flores em vida</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 1 semana</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('p12.jpg');"></div>
+                    <div><span class="uname">rodeio_limeira</span><span class="utime">• 2 sem</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="8.jpg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>625 curtidas</strong></div>
+                <div class="caption"><strong>rodeio_limeira</strong> rodeio #luansantana #gustavolima</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 2 semanas</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('p14.jpg');"></div>
+                    <div><span class="uname">vycnnz</span><span class="utime">• 2 sem</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="9.jpg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>6.080 curtidas</strong></div>
+                <div class="caption"><strong>vycnnz</strong> show hungria ontem aqui em limeira, foi incrível! #hungria #show #limeira</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 2 semanas</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('p13.jpg');"></div>
+                    <div><span class="uname">felipin</span><span class="utime">• 3 sem</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="10.jpg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>700 curtidas</strong></div>
+                <div class="caption"><strong>felipin</strong> amo minha mulher #minhavida</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 3 semanas</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+        <article class="post">
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="pp" style="background-image:url('p15.jpg');"></div>
+                    <div><span class="uname">frases_motivacionais</span><span class="utime">• 1 mês</span></div>
+                </div>
+                <i class="fa-solid fa-ellipsis"></i>
+            </div>
+            <div class="post-image"><img src="11.jpg" alt=""></div>
+            <div class="post-footer">
+                <div class="post-actions">
+                    <i class="fa-regular fa-heart" onclick="toggleLike(this)"></i>
+                    <i class="fa-regular fa-comment" onclick="focusInput(this)"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
+                    <i class="fa-regular fa-bookmark save"></i>
+                </div>
+                <div class="likes"><strong>400 curtidas</strong></div>
+                <div class="caption"><strong>frases_motivacionais</strong> se ame acima de tudo, porque no final das contas, você é a única pessoa que estará sempre ao seu lado. #amorpróprio #autoestima #confiança</div>
+                <div class="comments-list"></div>
+                <div class="post-time">há 1 mês</div>
+                <div class="comment-box">
+                    <div class="my-pp"></div>
+                    <input type="text" placeholder="Adicione um comentário..." oninput="toggleBtn(this)" onkeydown="enterC(event,this)">
+                    <button class="pub-btn" onclick="addC(this)">Publicar</button>
+                </div>
+            </div>
+        </article>
+
+    </div><!-- /feed -->
+
+    <!-- ASIDE -->
+    <div class="aside">
+        <div class="cur-user">
+            <div class="cur-pp"></div>
+            <div class="cur-info">
+                <strong>vivianevitoria26</strong>
+                <span>Vivih 💋</span>
+            </div>
+            <button class="mudar-btn">Mudar</button>
+        </div>
+
+        <div class="sug-title">
+            <span>Sugestões para você</span>
+            <a href="#">Ver tudo</a>
+        </div>
+
+        <div class="sug-row">
+            <div class="sug-pp" style="background-image:url('p7.jpg');"></div>
+            <div class="sug-info"><strong>@igor_henrique</strong><span>Seguido(a) por ws.cacau e ma...</span></div>
+            <button class="seg-btn">Seguir</button>
+        </div>
+        <div class="sug-row">
+            <div class="sug-pp" style="background-color:#806040;"></div>
+            <div class="sug-info"><strong>Guilherme Souza</strong><span>Seguido(a) por fatimabolos5...</span></div>
+            <button class="seg-btn">Seguir</button>
+        </div>
+        <div class="sug-row">
+            <div class="sug-pp" style="background-color:#d09080;"></div>
+            <div class="sug-info"><strong>isa</strong><span>Seguido(a) por ruth.santos4 e...</span></div>
+            <button class="seg-btn">Seguir</button>
+        </div>
+        <div class="sug-row">
+            <div class="sug-pp" style="background-color:#202020;"></div>
+            <div class="sug-info"><strong>Yass.fit</strong><span>Seguido(a) por __pvd.emyy__...</span></div>
+            <button class="seg-btn">Seguir</button>
+        </div>
+        <div class="sug-row">
+            <div class="sug-pp" style="background-image:url('https://flagcdn.com/us.svg');background-size:cover;"></div>
+            <div class="sug-info"><strong>President Donald... ✅</strong><span>Seguido(a) por patrickcostae...</span></div>
+            <button class="seg-btn">Seguir</button>
+        </div>
+
+        <div class="aside-footer">
+            <div>
+                <a href="#">Sobre</a> · <a href="#">Ajuda</a> · <a href="#">Imprensa</a> · <a href="#">API</a> · <a href="#">Carreiras</a> · <a href="#">Privacidade</a> ·
+                <a href="#">Termos</a> · <a href="#">Localizações</a> · <a href="#">Idioma</a> · <a href="#">Meta Verified</a>
+            </div>
+            <div style="margin-top:8px;">© 2026 INSTAGRAM FROM META</div>
+        </div>
+    </div>
+
+</div><!-- /main -->
+
+<!-- MODAL STORY -->
+<div class="s-overlay" id="sOverlay" onclick="overlayTap(event)">
+    <button class="s-arr" onclick="prevStory()"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="s-card" id="sCard">
+        <div class="s-bg" id="sBg"></div>
+        <div class="s-emoji" id="sEmoji"></div>
+        <div class="s-progress" id="sProg"></div>
+        <div class="s-head">
+            <div class="s-av" id="sAv"></div>
+            <span class="s-uname" id="sUname"></span>
+            <span class="s-t" id="sT"></span>
+            <button class="s-x" onclick="closeStory()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="s-tapL" onclick="prevStory()"></div>
+        <div class="s-tapR" onclick="nextStory()"></div>
+        <div class="s-rep"><input type="text" placeholder="Responder..."></div>
+    </div>
+    <button class="s-arr" onclick="nextStory()"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
+
+<script>
+/* ── CARROSSEL ── */
+const ss=document.getElementById('storiesScroll');
+document.getElementById('scL').onclick=()=>ss.scrollBy({left:-200,behavior:'smooth'});
+document.getElementById('scR').onclick=()=>ss.scrollBy({left:200,behavior:'smooth'});
+
+/* ── CURTIR ── */
+function toggleLike(i){
+    if(i.classList.contains('fa-solid')){
+        i.classList.replace('fa-solid','fa-regular');i.style.color='';
+    }else{
+        i.classList.replace('fa-regular','fa-solid');i.style.color='#ed4956';
+        i.style.transform='scale(1.4)';setTimeout(()=>i.style.transform='',150);
+    }
+}
+
+/* ── SALVAR ── */
+document.querySelectorAll('.save').forEach(b=>{
+    b.addEventListener('click',function(){
+        if(this.classList.contains('fa-solid')){this.classList.replace('fa-solid','fa-regular');}
+        else{this.classList.replace('fa-regular','fa-solid');}
+    });
+});
+
+/* ── COMENTÁRIOS ── */
+function toggleBtn(inp){inp.nextElementSibling.classList.toggle('on',inp.value.trim()!=='');}
+function focusInput(icon){icon.closest('.post-footer').querySelector('input').focus();}
+function enterC(e,inp){if(e.key==='Enter')addC(inp.nextElementSibling);}
+function addC(btn){
+    const inp=btn.previousElementSibling;
+    const t=inp.value.trim();if(!t)return;
+    const list=btn.closest('.post-footer').querySelector('.comments-list');
+    const d=document.createElement('div');d.className='c-item';
+    d.innerHTML=`<span><strong>vivianevitoria26</strong>${t}</span><button class="c-del" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>`;
+    list.appendChild(d);inp.value='';btn.classList.remove('on');
+}
+
+/* ── STORIES ── */
+const stories=[
+    {user:'julio_rodri...',  color:'#806040', emoji:'⚽', time:'há 10 min'},
+    {user:'pvd_thiag...',    color:'#c8a060', emoji:'🔥', time:'há 20 min'},
+    {user:'miih_amor...',    color:'#d090a0', emoji:'💅', time:'há 1 hora'},
+    {user:'daillyvnz',       color:'#808080', emoji:'🌙', time:'há 2 horas'},
+    {user:'x.alveesz',       color:'#604020', emoji:'🎮', time:'há 3 horas'},
+    {user:'llyawy__',        color:'#202020', emoji:'🖤', time:'há 4 horas'},
+    {user:'maa.eduarda',     color:'#a06080', emoji:'🌸', time:'há 5 horas'},
+    {user:'vitor__8',        color:'#406080', emoji:'🌆', time:'há 6 horas'},
+];
+let cur=0,raf=null,t0=null;
+const DUR=5000;
+
+function openStory(idx){
+    if(idx<0)return;
+    cur=idx;
+    document.getElementById('sOverlay').classList.add('open');
+    render();
+}
+function render(){
+    const s=stories[cur];
+    document.getElementById('sBg').style.background=s.color;
+    document.getElementById('sEmoji').textContent=s.emoji;
+    document.getElementById('sAv').style.background=s.color;
+    document.getElementById('sUname').textContent=s.user;
+    document.getElementById('sT').textContent=s.time;
+    document.getElementById('sProg').innerHTML=stories.map((_,i)=>
+        `<div class="s-seg"><div class="s-fill" id="sf${i}" style="width:${i<cur?'100%':'0%'}"></div></div>`
+    ).join('');
+    cancelAnimationFrame(raf);t0=null;
+    (function anim(ts){
+        if(!t0)t0=ts;
+        const p=Math.min((ts-t0)/DUR*100,100);
+        const f=document.getElementById('sf'+cur);
+        if(f)f.style.width=p+'%';
+        if(p<100){raf=requestAnimationFrame(anim);}
+        else nextStory();
+    })(performance.now());
+}
+function nextStory(){cancelAnimationFrame(raf);t0=null;cur<stories.length-1?++cur&&render()||render():closeStory();}
+function prevStory(){cancelAnimationFrame(raf);t0=null;if(cur>0){cur--;render();}}
+function closeStory(){cancelAnimationFrame(raf);document.getElementById('sOverlay').classList.remove('open');}
+function overlayTap(e){if(e.target.id==='sOverlay')closeStory();}
+document.addEventListener('keydown',e=>{
+    if(!document.getElementById('sOverlay').classList.contains('open'))return;
+    if(e.key==='ArrowRight')nextStory();
+    if(e.key==='ArrowLeft')prevStory();
+    if(e.key==='Escape')closeStory();
+});
+</script>
+</body>
+</html>
+
