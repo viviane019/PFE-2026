@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VivihTube</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+ <link rel="stylesheet" href="Youtube.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <button class="icon-btn" id="menu-toggle">
+        <span class="material-icons">menu</span>
+      </button>
+      <a href="#" class="logo">
+        <svg viewBox="0 0 90 20" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+          <path d="M27.97 3.73C27.56 2.15 26.32.93 24.72.52 22.54 0 14 0 14 0S5.46 0 3.28.52C1.68.93.44 2.15.03 3.73 0 3.75-0.5 6.25 0.03 10c0.41 1.58 1.65 2.8 3.25 3.21C5.46 13.73 14 13.73 14 13.73s8.54 0 10.72-.52c1.6-.41 2.84-1.63 3.25-3.21.53-3.75.03-6.25 0-6.27z" fill="#FF0000"/>
+          <path d="M11.2 9.8V3.93l5.6 2.93-5.6 2.94z" fill="#fff"/>
+          <text x="32" y="13" font-family="Roboto, sans-serif" font-size="13" font-weight="700" fill="currentColor" letter-spacing="-0.5">ViewTube</text>
+        </svg>
+      </a>
+    </div>
+
+    <div class="header-center">
+      <div class="search-bar">
+        <input type="text" placeholder="Pesquisar" class="search-input" />
+        <button class="search-btn">
+          <span class="material-icons">search</span>
+        </button>
+      </div>
+      <button class="icon-btn mic-btn">
+        <span class="material-icons">mic</span>
+      </button>
+    </div>
+
+    <div class="header-right">
+      <button class="icon-btn">
+        <span class="material-icons">videocam</span>
+      </button>
+      <button class="icon-btn notif-btn">
+        <span class="material-icons">notifications</span>
+        <span class="badge">3</span>
+      </button>
+      <div class="avatar">VS</div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active">
+          <span class="material-icons">home</span>
+          <span>Início</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons">explore</span>
+          <span>Explorar</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons">subscriptions</span>
+          <span>Inscrições</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons">video_library</span>
+          <span>Biblioteca</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons">history</span>
+          <span>Histórico</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <p class="sidebar-section-title">Inscrições</p>
+        <a href="#" class="nav-item channel-item">
+          <div class="channel-icon" style="background:#e53935;">LC</div>
+          <span>Lofi Coding</span>
+        </a>
+        <a href="#" class="nav-item channel-item">
+          <div class="channel-icon" style="background:#1e88e5;">DV</div>
+          <span>Dev Vlog</span>
+        </a>
+        <a href="#" class="nav-item channel-item">
+          <div class="channel-icon" style="background:#43a047;">TN</div>
+          <span>TechNow BR</span>
+        </a>
+        <a href="#" class="nav-item channel-item">
+          <div class="channel-icon" style="background:#8e24aa;">CS</div>
+          <span>Código Simples</span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="#" class="nav-item">
+          <span class="material-icons">settings</span>
+          <span>Configurações</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons">help_outline</span>
+          <span>Ajuda</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+      <!-- CHIPS / FILTERS -->
+      <div class="chips-bar">
+        <button class="chip active">Tudo</button>
+        <button class="chip">Ao vivo</button>
+        <button class="chip">Programação</button>
+        <button class="chip">Música</button>
+        <button class="chip">Jogos</button>
+        <button class="chip">Notícias</button>
+        <button class="chip">Filmes</button>
+        <button class="chip">Esportes</button>
+        <button class="chip">Culinária</button>
+        <button class="chip">Tecnologia</button>
+      </div>
+
+      <!-- VIDEO GRID -->
+      <div class="video-grid">
+
+        <!-- Card 1 -->
+        <div class="video-card">
+          <div class="thumbnail">
+            <div class="thumb-bg" style="background: linear-gradient(135deg,#1a1a2e,#16213e);"></div>
+            <span class="duration">12:34</span>
+            <div class="thumb-overlay">▶</div>
+          </div>
+          <div class="card-info">
+            <div class="channel-avatar" style="background:#e53935;">LC</div>
+            <div class="card-details">
+              <h3 class="video-title">Como criar um app React do zero em 2024</h3>
+              <p class="channel-name">Lofi Coding</p>
+              <p class="meta">420 mil visualizações · 2 dias atrás</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="video-card">
+          <div class="thumbnail">
+            <div class="thumb-bg" style="background: linear-gradient(135deg,#0f3460,#533483);"></div>
+            <span class="duration">8:21</span>
+            <div class="thumb-overlay">▶</div>
+          </div>
+          <div class="card-info">
+            <div class="channel-avatar" style="background:#1e88e5;">DV</div>
+            <div class="card-details">
+              <h3 class="video-title">Minha setup de trabalho em 2024 – Tour completo</h3>
+              <p class="channel-name">Dev Vlog</p>
+              <p class="meta">218 mil visualizações · 5 dias atrás</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="video-card">
+          <div class="thumbnail">
+            <div class="thumb-bg" style="background: linear-gradient(135deg,#134e5e,#71b280);"></div>
+            <span class="duration">23:07</span>
+            <div class="thumb-overlay">▶</div>
+          </div>
+          <div class="card-info">
+            <div class="channel-avatar" style="background:#43a047;">TN</div>
+            <div class="card-details">
+              <h3 class="video-title">Os melhores gadgets de tecnologia que você precisa ver</h3>
+              <p class="channel-name">TechNow BR</p>
+              <p class="meta">1,2 mi de visualizações · 1 semana atrás</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="video-card">
+          <div class="thumbnail">
+            <div class="thumb-bg" style="background: linear-gradient(135deg,#4a0072,#c62828);"></div>
+            <span class="duration">45:00</span>
+            <span class="live-badge">AO VIVO</span>
+            <div class="thumb-overlay">▶</div>
+          </div>
+          <div class="card-info">
+            <div class="channel-avatar" style="background:#8e24aa;">CS</div>
+            <div class="card-details">
+              <h3 class="video-title">Live: Construindo uma API REST com Node.js e Prisma</h3>
+              <p class="channel-name">Código Simples</p>
+              <p class="meta">3,4 mil assistindo agora</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="video-card">
+          <div class="thumbnail">
+            <div class="thumb-bg" style="background: linear-gradient(135deg,#bf360c,#f57f17);"></div>
+            <span class="duration">6:55</span>
+            <div class="thumb-overlay">▶</div>
+          </div>
+          <div class="card-info">
+            <div class="channel-avatar" style="background:#e53935;">LC</div>
+            <div class="card-details">
+              <h3 class="video-title">Top 5 extensões do VS Code para produtividade</h3>
+              <p class="channel-name">Lofi Coding</p>
+              <p class="meta">89 mil visualizações · 3 semanas atrás</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="video-card">
+          <div class="thumbnail">
+            <div class="thumb-bg" style="background: linear-gradient(135deg,#004d40,#1565c0);"></div>
+            <span class="duration">18:44</span>
+            <div class="thumb-overlay">▶</div>
+          </div>
+          <div class="card-info">
+            <div class="channel-avatar" style="background:#1e88e5;">DV</div>
+            <div class="card-details">
+              <h3 class="video-title">Docker para iniciantes – tudo que você precisa saber</h3>
+              <p class="channel-name">Dev Vlog</p>
+              <p class="meta">540 mil visualizações · 1 mês atrás</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="video-card">
+          <div class="thumbnail">
+            <div class="thumb-bg" style="background: linear-gradient(135deg,#1b0000,#880e4f);"></div>
+            <span class="duration">31:12</span>
+            <div class="thumb-overlay">▶</div>
+          </div>
+          <div class="card-info">
+            <div class="channel-avatar" style="background:#43a047;">TN</div>
+            <div class="card-details">
+              <h3 class="video-title">IA no trabalho: como usar ChatGPT e Claude para ser mais produtivo</h3>
+              <p class="channel-name">TechNow BR</p>
+              <p class="meta">2,9 mi de visualizações · 3 meses atrás</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="video-card">
+          <div class="thumbnail">
+            <div class="thumb-bg" style="background: linear-gradient(135deg,#263238,#37474f);"></div>
+            <span class="duration">14:00</span>
+            <div class="thumb-overlay">▶</div>
+          </div>
+          <div class="card-info">
+            <div class="channel-avatar" style="background:#8e24aa;">CS</div>
+            <div class="card-details">
+              <h3 class="video-title">TypeScript na prática: tipagens avançadas que vão mudar seu código</h3>
+              <p class="channel-name">Código Simples</p>
+              <p class="meta">305 mil visualizações · 2 meses atrás</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Toggle sidebar
+    document.getElementById('menu-toggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    });
+
+    // Active chip
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    });
+
+    // Active nav item
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
